@@ -8,6 +8,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Header from "@/components/Header";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/components/ui/use-toast";
 
 const formSchema = z.object({
   email: z.string().email("Please enter a valid email"),
@@ -17,6 +19,8 @@ const formSchema = z.object({
 const Login = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -28,8 +32,13 @@ const Login = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
-    // TODO: Implement actual login logic
-    console.log(values);
+    // Simulate login - in a real app, this would be an API call
+    const username = values.email.split('@')[0];
+    login(username);
+    toast({
+      title: "Logged in successfully",
+      description: `Welcome back, ${username}!`,
+    });
     setIsLoading(false);
     navigate(-1);
   };
